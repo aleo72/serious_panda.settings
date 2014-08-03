@@ -4,7 +4,7 @@ package ua.com.serious_panda.settings
  * Программная оболочка для настроек
  * Created by aleo on 02.08.14.
  */
-trait Properties[T] {
+trait PropertiesTrait[T] {
 
   /**
    * Ключ за яким буде здерігатися настройка
@@ -19,12 +19,12 @@ trait Properties[T] {
   /**
    * Название bundle где хранится описание
    */
-  val nameResourceBundle: String
+  protected var nameResourceBundle: String
 
   /**
    * Ключ в указаном bundle
    */
-  val keyInResourceBundle: String
+  protected var keyInResourceBundle: String
 
   /**
    * Настройки які були останнього разу зчитані
