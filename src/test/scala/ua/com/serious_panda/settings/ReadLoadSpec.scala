@@ -11,7 +11,11 @@ import org.scalatest._
  */
 class ReadLoadSpec extends FlatSpec with Matchers {
 
-  implicit val file = new File("./src/test/resources/test.properties")
+  val dir = "./src/test/resources"
+  val fileDir = new File(dir)
+  implicit val file = new File(s"$dir/test.properties")
+
+  fileDir.mkdirs()
 
   if (file.exists()) file.delete()
 
