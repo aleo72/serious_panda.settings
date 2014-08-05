@@ -1,7 +1,10 @@
 package ua.com.serious_panda.settings
 
+import java.awt.Dimension
+import java.awt.event.{ActionEvent, ActionListener}
 import java.util.Locale
 import javax.swing._
+import javax.swing.event.{ChangeEvent, ChangeListener}
 
 /**
  *
@@ -31,7 +34,7 @@ case class Property[T](key: String, defaultValue: T) extends PropertiesTrait[T] 
       case x: Float => String.valueOf(x)
       case x: String => x
       case x: Boolean => String.valueOf(x)
-      case x: java.util.Locale => s"${x.getLanguage}-${x.getCountry}-${x.getVariant}"
+      case x: java.util.Locale => s"${x.getLanguage}_${x.getCountry}_${x.getVariant}"
       case _ => throw new IllegalArgumentException("Not support Type")
     }
   }
@@ -52,7 +55,7 @@ case class Property[T](key: String, defaultValue: T) extends PropertiesTrait[T] 
       case Property(key: String, defaultValue: String) => valueString
       case Property(key: String, defaultValue: Boolean) => valueString.toBoolean
       case Property(key: String, defaultValue: Locale) =>
-        val arr = valueString.split("-")
+        val arr = valueString.split("_")
         arr.length match {
           case 1 => new Locale(arr(0))
           case 2 => new Locale(arr(0), arr(1))
@@ -102,21 +105,70 @@ case class Property[T](key: String, defaultValue: T) extends PropertiesTrait[T] 
     this match {
       case Property(key: String, defaultValue: String) =>
         component = new JTextField(this.value.toString)
+        component.asInstanceOf[JTextField].addActionListener(new ActionListener {
+          override def actionPerformed(event: ActionEvent): Unit = {
+            value = stringToObject(component.asInstanceOf[JTextField].getText)
+          }
+        })
       case Property(key: String, defaultValue: Long) =>
         component = new JSpinner(new SpinnerNumberModel(this.value.asInstanceOf[Long], Long.MinValue, Long.MaxValue, 1))
+        component.asInstanceOf[JSpinner].addChangeListener(new ChangeListener {
+          override def stateChanged(event: ChangeEvent): Unit = {
+            value = stringToObject(event.getSource.asInstanceOf[JSpinner].getValue.toString.toDouble.toLong.toString)
+          }
+        })
       case Property(key: String, defaultValue: Int) =>
         component = new JSpinner(new SpinnerNumberModel(this.value.asInstanceOf[Int], Int.MinValue, Int.MaxValue, 1))
+        component.asInstanceOf[JSpinner].addChangeListener(new ChangeListener {
+          override def stateChanged(event: ChangeEvent): Unit = {
+            value = stringToObject(event.getSource.asInstanceOf[JSpinner].getValue.toString.toDouble.toInt.toString)
+          }
+        })
       case Property(key: String, defaultValue: Short) =>
         component = new JSpinner(new SpinnerNumberModel(this.value.asInstanceOf[Short], Short.MinValue, Short.MaxValue, 1))
+        component.asInstanceOf[JSpinner].addChangeListener(new ChangeListener {
+          override def stateChanged(event: ChangeEvent): Unit = {
+            value = stringToObject(event.getSource.asInstanceOf[JSpinner].getValue.toString.toDouble.toShort.toString)
+          }
+        })
       case Property(key: String, defaultValue: Byte) =>
         component = new JSpinner(new SpinnerNumberModel(this.value.asInstanceOf[Byte], Byte.MinValue, Byte.MaxValue, 1))
+        component.asInstanceOf[JSpinner].addChangeListener(new ChangeListener {
+          override def stateChanged(event: ChangeEvent): Unit = {
+            value = stringToObject(event.getSource.asInstanceOf[JSpinner].getValue.toString.toDouble.toByte.toString)
+          }
+        })
       case Property(key: String, defaultValue: Float) =>
-        component = new JSpinner(new SpinnerNumberModel(this.value.asInstanceOf[Float], Float.MinValue, Float.MaxValue, 1))
+        component = new JSpinner(new SpinnerNumberModel(this.value.asInstanceOf[Float], Long.MinValue, Long.MaxValue, 0.5))
+        component.asInstanceOf[JSpinner].addChangeListener(new ChangeListener {
+          override def stateChanged(event: ChangeEvent): Unit = {
+            value = stringToObject(event.getSource.asInstanceOf[JSpinner].getValue.toString)
+          }
+        })
       case Property(key: String, defaultValue: Double) =>
-        component = new JSpinner(new SpinnerNumberModel(this.value.asInstanceOf[Double], Double.MinValue, Double.MaxValue, 1))
+        component = new JSpinner(new SpinnerNumberModel(this.value.asInstanceOf[Double], Long.MinValue, Long.MaxValue, 0.5))
+        component.asInstanceOf[JSpinner].addChangeListener(new ChangeListener {
+          override def stateChanged(event: ChangeEvent): Unit = {
+            value = stringToObject(event.getSource.asInstanceOf[JSpinner].getValue.toString)
+          }
+        })
+
       case Property(key: String, defaultValue: Boolean) =>
         component = new JCheckBox()
         component.asInstanceOf[JCheckBox].setSelected(this.value.asInstanceOf[Boolean])
+        component.asInstanceOf[JCheckBox].addActionListener(new ActionListener {
+          override def actionPerformed(event: ActionEvent): Unit = {
+            value = component.asInstanceOf[JCheckBox].isSelected.asInstanceOf[T]
+          }
+        })
+      case Property(key: String, defaultValue: Locale) =>
+        component = new JComboBox[Locale](Locale.getAvailableLocales)
+        component.asInstanceOf[JComboBox[Locale]].setSelectedItem(this.value.asInstanceOf[Locale])
+        component.asInstanceOf[JComboBox[Locale]].addActionListener(new ActionListener {
+          override def actionPerformed(event: ActionEvent): Unit = {
+            value = event.getSource.asInstanceOf[JComboBox[Locale]].getSelectedItem.asInstanceOf[T]
+          }
+        })
       case _ => ???
     }
     component.setEnabled(this.editable)
