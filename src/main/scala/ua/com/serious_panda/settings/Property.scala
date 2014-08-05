@@ -1,6 +1,7 @@
 package ua.com.serious_panda.settings
 
 import java.util.Locale
+import javax.swing._
 
 /**
  *
@@ -93,5 +94,32 @@ case class Property[T](key: String, defaultValue: T) extends PropertiesTrait[T] 
     val newValue = v.asInstanceOf[T]
     this.value = newValue
     newValue
+  }
+
+  override def editableComponent(implicit file: java.io.File): JComponent = {
+    var component: JComponent = null
+
+    this match {
+      case Property(key: String, defaultValue: String) =>
+        component = new JTextField(this.value.toString)
+      case Property(key: String, defaultValue: Long) =>
+        component = new JSpinner(new SpinnerNumberModel(this.value.asInstanceOf[Long], Long.MinValue, Long.MaxValue, 1))
+      case Property(key: String, defaultValue: Int) =>
+        component = new JSpinner(new SpinnerNumberModel(this.value.asInstanceOf[Int], Int.MinValue, Int.MaxValue, 1))
+      case Property(key: String, defaultValue: Short) =>
+        component = new JSpinner(new SpinnerNumberModel(this.value.asInstanceOf[Short], Short.MinValue, Short.MaxValue, 1))
+      case Property(key: String, defaultValue: Byte) =>
+        component = new JSpinner(new SpinnerNumberModel(this.value.asInstanceOf[Byte], Byte.MinValue, Byte.MaxValue, 1))
+      case Property(key: String, defaultValue: Float) =>
+        component = new JSpinner(new SpinnerNumberModel(this.value.asInstanceOf[Float], Float.MinValue, Float.MaxValue, 1))
+      case Property(key: String, defaultValue: Double) =>
+        component = new JSpinner(new SpinnerNumberModel(this.value.asInstanceOf[Double], Double.MinValue, Double.MaxValue, 1))
+      case Property(key: String, defaultValue: Boolean) =>
+        component = new JCheckBox()
+        component.asInstanceOf[JCheckBox].setSelected(this.value.asInstanceOf[Boolean])
+      case _ => ???
+    }
+    component.setEnabled(this.editable)
+    component
   }
 }

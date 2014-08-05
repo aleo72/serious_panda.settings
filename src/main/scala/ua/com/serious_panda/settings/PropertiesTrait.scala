@@ -1,5 +1,10 @@
 package ua.com.serious_panda.settings
 
+import java.util.ResourceBundle
+import javax.swing.{JComponent, JLabel, JPanel}
+
+import com.jhlabs.awt.ParagraphLayout
+
 /**
  * Программная оболочка для настроек
  * Created by aleo on 02.08.14.
@@ -129,4 +134,35 @@ trait PropertiesTrait[T] {
    */
   def value_=(obj: T)(implicit file: java.io.File): Unit = if(this.editable) putAndStore(objectToString(obj)) else throw new UnsupportedOperationException
 
+  /**
+   * JLabel який указує ім’я настройки з бандла ресурсов
+   * @return JLabel який указує ім’я настройки з бандла ресурсов
+   */
+  def jLabel: javax.swing.JLabel = {
+    if (this.nameResourceBundle == null || this.keyInResourceBundle == null) {
+      throw new IllegalArgumentException(s"nameResourceBundle and keyInResourceBundle must be initialized")
+    }
+    new javax.swing.JLabel(ResourceBundle.getBundle(this.nameResourceBundle).getString(this.keyInResourceBundle))
+  }
+
+  /**
+   * Компонент який змінює значення настройки
+   * @return
+   */
+  def editableComponent(implicit file: java.io.File): javax.swing.JComponent
+
+  def jPanel(implicit file: java.io.File): javax.swing.JPanel = {
+    val panel = new JPanel(new ParagraphLayout())
+
+    val label = jLabel
+    val component = editableComponent
+
+    label.setLabelFor(component)
+
+    panel.add(jLabel, ParagraphLayout.NEW_PARAGRAPH)
+    panel.add(editableComponent)
+    panel
+  }
+
+  def labelAndComponent(implicit file: java.io.File): (JLabel, JComponent) = (jLabel, editableComponent)
 }
