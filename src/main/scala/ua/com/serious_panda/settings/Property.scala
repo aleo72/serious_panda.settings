@@ -8,13 +8,11 @@ import java.util.Locale
  */
 case class Property[T](key: String, defaultValue: T) extends PropertiesTrait[T] {
 
-  override var nameResourceBundle: String = null
-  override var keyInResourceBundle: String = null
-
-  def this(key: String, defaultValue: T, nameResourceBundle: String, keyInResourceBundle: String) {
+  def this(key: String, defaultValue: T, helpText: Option[String] = None, nameResourceBundle: String = null, keyInResourceBundle: String = null) {
     this(key, defaultValue)
     this.nameResourceBundle = nameResourceBundle
     this.keyInResourceBundle = keyInResourceBundle
+    this._helpText = helpText
   }
 
   /**
@@ -43,85 +41,56 @@ case class Property[T](key: String, defaultValue: T) extends PropertiesTrait[T] 
    * @return об’єкт
    */
   override protected def stringToObject(valueString: String): T = {
-    val result = defaultValue match {
-      case x: Long => valueString.toLong
-      case x: Int => valueString.toInt
-      case x: Short => valueString.toShort
-      case x: Byte => valueString.toByte
-      case x: Double => valueString.toDouble
-      case x: Float => valueString.toFloat
-      case x: String => valueString
-      case x: Boolean => valueString.toBoolean
-      case x: java.util.Locale =>
+    val res = this match {
+      case Property(key: String, defaultValue: Long) => valueString.toLong
+      case Property(key: String, defaultValue: Int) => valueString.toInt
+      case Property(key: String, defaultValue: Short) => valueString.toShort
+      case Property(key: String, defaultValue: Byte) => valueString.toByte
+      case Property(key: String, defaultValue: Float) => valueString.toFloat
+      case Property(key: String, defaultValue: Double) => valueString.toDouble
+      case Property(key: String, defaultValue: String) => valueString
+      case Property(key: String, defaultValue: Boolean) => valueString.toBoolean
+      case Property(key: String, defaultValue: Locale) =>
         val arr = valueString.split("-")
-        val res: Locale = arr.length match {
+        arr.length match {
           case 1 => new Locale(arr(0))
           case 2 => new Locale(arr(0), arr(1))
           case 3 => new Locale(arr(0), arr(1), arr(2))
           case _ => throw new IllegalArgumentException
         }
-        res
       case _ => throw new IllegalArgumentException
     }
-    result.asInstanceOf[T]
+    res.asInstanceOf[T]
   }
 
-  def ++(implicit file: java.io.File): T = {
+  def inc(implicit file: java.io.File): T = {
     val oldValue = this.value
-    val incValue: AnyVal = oldValue match {
-      case x: Long => x + 1
-      case x: Int => x + 1
-      case x: Short => x + 1
-      case x: Byte => x + 1
-      case x: Double => x + 1.0
-      case x: Float => x + 1.0
+    val v = this match {
+      case x@Property(key: String, defaultValue: Long) => oldValue.asInstanceOf[Long] + 1L
+      case x@Property(key: String, defaultValue: Int) => oldValue.asInstanceOf[Int] + 1
+      case x@Property(key: String, defaultValue: Short) => oldValue.asInstanceOf[Short] + 1
+      case x@Property(key: String, defaultValue: Byte) => oldValue.asInstanceOf[Byte] + 1
+      case x@Property(key: String, defaultValue: Float) => oldValue.asInstanceOf[Float] + 1
+      case x@Property(key: String, defaultValue: Double) => oldValue.asInstanceOf[Double] + 1.0
       case _ => throw new UnsupportedOperationException
     }
-    this.value = incValue.asInstanceOf[T]
-    oldValue
-  }
-
-  def unary_++(implicit file: java.io.File): T = {
-    val incValue: AnyVal = this.value match {
-      case x: Long => x + 1
-      case x: Int => x + 1
-      case x: Short => x + 1
-      case x: Byte => x + 1
-      case x: Double => x + 1.0
-      case x: Float => x + 1.0
-      case _ => throw new UnsupportedOperationException
-    }
-    val newValue = incValue.asInstanceOf[T]
+    val newValue = v.asInstanceOf[T]
     this.value = newValue
     newValue
   }
 
-  def --(implicit file: java.io.File): T = {
+  def dec(implicit file: java.io.File): T = {
     val oldValue = this.value
-    val decValue: AnyVal = oldValue match {
-      case x: Long => x - 1
-      case x: Int => x - 1
-      case x: Short => x - 1
-      case x: Byte => x - 1
-      case x: Double => x - 1.0
-      case x: Float => x - 1.0
+    val v = this match {
+      case x@Property(key: String, defaultValue: Long) => oldValue.asInstanceOf[Long] - 1L
+      case x@Property(key: String, defaultValue: Int) => oldValue.asInstanceOf[Int] - 1
+      case x@Property(key: String, defaultValue: Short) => oldValue.asInstanceOf[Short] - 1
+      case x@Property(key: String, defaultValue: Byte) => oldValue.asInstanceOf[Byte] - 1
+      case x@Property(key: String, defaultValue: Float) => oldValue.asInstanceOf[Float] - 1
+      case x@Property(key: String, defaultValue: Double) => oldValue.asInstanceOf[Double] - 1.0
       case _ => throw new UnsupportedOperationException
     }
-    this.value = decValue.asInstanceOf[T]
-    oldValue
-  }
-
-  def unary_--(implicit file: java.io.File): T = {
-    val decValue: AnyVal = this.value match {
-      case x: Long => x - 1
-      case x: Int => x - 1
-      case x: Short => x - 1
-      case x: Byte => x - 1
-      case x: Double => x - 1.0
-      case x: Float => x - 1.0
-      case _ => throw new UnsupportedOperationException
-    }
-    val newValue = decValue.asInstanceOf[T]
+    val newValue = v.asInstanceOf[T]
     this.value = newValue
     newValue
   }

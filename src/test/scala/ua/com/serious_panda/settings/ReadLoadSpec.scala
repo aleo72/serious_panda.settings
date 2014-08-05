@@ -24,7 +24,7 @@ class ReadLoadSpec extends FlatSpec with Matchers {
     val stringFirstValue = "stringFirstValue"
     val stringSecondValue = "stringSecondValue"
 
-    val prop = Property[String](key, stringFirstValue)
+    val prop = new Property [String](key, stringFirstValue)
 
     prop.value should be(stringFirstValue)
 
@@ -33,7 +33,7 @@ class ReadLoadSpec extends FlatSpec with Matchers {
     prop.value should be(stringSecondValue)
 
     a[UnsupportedOperationException] shouldBe thrownBy {
-      prop.++
+      prop.dec
     }
   }
 
@@ -42,22 +42,18 @@ class ReadLoadSpec extends FlatSpec with Matchers {
     val firstValue = 1L
     val secondValue = 2L
 
-    val prop = Property[Long](key, firstValue)
+    val prop = new Property[Long](key, firstValue)
     prop.value should be(firstValue)
 
     prop.value = secondValue
 
     prop.value should be(secondValue)
-    prop.++ should be(secondValue)
-    prop.value should be(secondValue + 1)
-    prop.unary_++ should be(secondValue + 1 + 1)
+    prop.inc should be(secondValue + 1)
 
     prop.value = secondValue
 
     prop.value should be(secondValue)
-    prop.-- should be(secondValue)
-    prop.value should be(secondValue - 1)
-    prop.unary_-- should be(secondValue - 1 - 1)
+    prop.dec should be(secondValue - 1)
   }
 
   "Property[Int]" should "save and load Int properties" in {
@@ -65,22 +61,18 @@ class ReadLoadSpec extends FlatSpec with Matchers {
     val firstValue = 1
     val secondValue = 2
 
-    val prop = Property[Int](key, firstValue)
+    val prop = new Property [Int](key, firstValue)
     prop.value should be(firstValue)
 
     prop.value = secondValue
 
     prop.value should be(secondValue)
-    prop.++ should be(secondValue)
-    prop.value should be(secondValue + 1)
-    prop.unary_++ should be(secondValue + 1 + 1)
+    prop.inc should be(secondValue + 1)
 
     prop.value = secondValue
 
     prop.value should be(secondValue)
-    prop.-- should be(secondValue)
-    prop.value should be(secondValue - 1)
-    prop.unary_-- should be(secondValue - 1 - 1)
+    prop.dec should be(secondValue - 1)
   }
 
   "Property[Short]" should "save and load Short properties" in {
@@ -88,22 +80,18 @@ class ReadLoadSpec extends FlatSpec with Matchers {
     val firstValue: Short = 1
     val secondValue: Short = 2
 
-    val prop = Property[Short](key, firstValue)
+    val prop = new Property [Short](key, firstValue)
     prop.value should be(firstValue)
 
     prop.value = secondValue
 
     prop.value should be(secondValue)
-    prop.++ should be(secondValue)
-    prop.value should be(secondValue + 1)
-    prop.unary_++ should be(secondValue + 1 + 1)
+    prop.inc should be(secondValue + 1)
 
     prop.value = secondValue
 
     prop.value should be(secondValue)
-    prop.-- should be(secondValue)
-    prop.value should be(secondValue - 1)
-    prop.unary_-- should be(secondValue - 1 - 1)
+    prop.dec should be(secondValue - 1)
   }
 
   "Property[Byte]" should "save and load Byte properties" in {
@@ -111,22 +99,18 @@ class ReadLoadSpec extends FlatSpec with Matchers {
     val firstValue: Byte = 1
     val secondValue: Byte = 2
 
-    val prop = Property[Byte](key, firstValue)
+    val prop = new Property [Byte](key, firstValue)
     prop.value should be(firstValue)
 
     prop.value = secondValue
 
     prop.value should be(secondValue)
-    prop.++ should be(secondValue)
-    prop.value should be(secondValue + 1)
-    prop.unary_++ should be(secondValue + 1 + 1)
+    prop.inc should be(secondValue + 1)
 
     prop.value = secondValue
 
     prop.value should be(secondValue)
-    prop.-- should be(secondValue)
-    prop.value should be(secondValue - 1)
-    prop.unary_-- should be(secondValue - 1 - 1)
+    prop.dec should be(secondValue - 1)
   }
 
   "Property[Double]" should "save and load Double properties" in {
@@ -134,22 +118,18 @@ class ReadLoadSpec extends FlatSpec with Matchers {
     val firstValue = 1.0
     val secondValue = 2.0
 
-    val prop = Property[Double](key, firstValue)
+    val prop = new Property [Double](key, firstValue)
     prop.value should be(firstValue)
 
     prop.value = secondValue
 
     prop.value should be(secondValue)
-    prop.++ should be(secondValue)
-    prop.value should be(secondValue + 1.0)
-    prop.unary_++ should be(secondValue + 1.0 + 1.0)
+    prop.inc should be(secondValue + 1.0)
 
     prop.value = secondValue
 
     prop.value should be(secondValue)
-    prop.-- should be(secondValue)
-    prop.value should be(secondValue - 1.0)
-    prop.unary_-- should be(secondValue - 1.0 - 1.0)
+    prop.dec should be(secondValue - 1.0)
   }
 
   "Property[Float]" should "save and load Float properties" in {
@@ -157,22 +137,18 @@ class ReadLoadSpec extends FlatSpec with Matchers {
     val firstValue = 1.0F
     val secondValue = 2.0F
 
-    val prop = Property[Float](key, firstValue)
+    val prop = new Property [Float](key, firstValue)
     prop.value should be(firstValue)
 
     prop.value = secondValue
 
     prop.value should be(secondValue)
-    prop.++ should be(secondValue)
-    prop.value should be(secondValue + 1.0)
-    prop.unary_++ should be(secondValue + 1.0 + 1.0)
+    prop.inc should be(secondValue + 1.0)
 
     prop.value = secondValue
 
     prop.value should be(secondValue)
-    prop.-- should be(secondValue)
-    prop.value should be(secondValue - 1.0)
-    prop.unary_-- should be(secondValue - 1.0 - 1.0)
+    prop.dec should be(secondValue - 1.0)
   }
 
   "Property[Boolean]" should "save and load Boolean properties" in {
@@ -180,7 +156,7 @@ class ReadLoadSpec extends FlatSpec with Matchers {
     val firstValue = true
     val secondValue = false
 
-    val prop = Property[Boolean](key, firstValue)
+    val prop = new Property [Boolean](key, firstValue)
     prop.value should be(firstValue)
 
     prop.value = secondValue
@@ -194,7 +170,7 @@ class ReadLoadSpec extends FlatSpec with Matchers {
     val secondValue = Locale.KOREAN
     val uk = new Locale("uk", "UK")
 
-    val prop = Property[Locale](key, firstValue)
+    val prop = new Property [Locale](key, firstValue)
 
     prop.value shouldBe firstValue
 
@@ -206,13 +182,25 @@ class ReadLoadSpec extends FlatSpec with Matchers {
     prop.value shouldBe uk
 
     a [UnsupportedOperationException] shouldBe thrownBy {
-      prop.++
+      prop.inc
     }
 
     a [UnsupportedOperationException] shouldBe thrownBy {
       prop.editable = false
       prop.value = Locale.CANADA
     }
+  }
+
+  "Property helpText" should " check help text" in {
+    val key = "key.helptext"
+    val prop = new Property [String](key, "defaultProperty with help text", Some("help"))
+
+    prop.helpText shouldBe Some("help")
+
+    val key2 = "key.helptext2"
+    val prop2 = new Property [String](key2, "defaultProperty with out help text")
+
+    prop2.helpText shouldBe None
   }
 
 }

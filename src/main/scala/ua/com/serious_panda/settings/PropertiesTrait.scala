@@ -19,12 +19,19 @@ trait PropertiesTrait[T] {
   /**
    * Название bundle где хранится описание
    */
-  protected var nameResourceBundle: String
+  protected var nameResourceBundle: String = null
 
   /**
    * Ключ в указаном bundle
    */
-  protected var keyInResourceBundle: String
+  protected var keyInResourceBundle: String = null
+
+  /**
+   * Домоміжний текст, який може дати поясненя
+   */
+  protected var _helpText: Option[String] = None
+
+  def helpText = _helpText
 
   /**
    * Настройки які були останнього разу зчитані
