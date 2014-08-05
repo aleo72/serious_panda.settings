@@ -34,6 +34,11 @@ trait PropertiesTrait[T] {
   private var lastModified = 0L
 
   /**
+   * Вказує на те, змінна чи ні ця настройка
+   */
+  var editable: Boolean = true
+
+  /**
    * Метод збереження настройки
    * @param properties настройки для збереження
    * @param comment коментарій для збереження
@@ -115,6 +120,6 @@ trait PropertiesTrait[T] {
    * @param file файл у який необхідно зберігти
    * @return Unit
    */
-  def value_=(obj: T)(implicit file: java.io.File): Unit = putAndStore(objectToString(obj))
+  def value_=(obj: T)(implicit file: java.io.File): Unit = if(this.editable) putAndStore(objectToString(obj)) else throw new UnsupportedOperationException
 
 }

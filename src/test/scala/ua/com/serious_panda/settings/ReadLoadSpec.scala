@@ -205,8 +205,13 @@ class ReadLoadSpec extends FlatSpec with Matchers {
     prop.value = uk
     prop.value shouldBe uk
 
-    a[UnsupportedOperationException] shouldBe thrownBy {
+    a [UnsupportedOperationException] shouldBe thrownBy {
       prop.++
+    }
+
+    a [UnsupportedOperationException] shouldBe thrownBy {
+      prop.editable = false
+      prop.value = Locale.CANADA
     }
   }
 
