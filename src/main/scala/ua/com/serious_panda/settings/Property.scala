@@ -1,10 +1,11 @@
 package ua.com.serious_panda.settings
 
-import java.awt.Dimension
 import java.awt.event.{ActionEvent, ActionListener}
 import java.util.Locale
 import javax.swing._
 import javax.swing.event.{ChangeEvent, ChangeListener}
+
+import com.jhlabs.awt.ParagraphLayout
 
 /**
  *
@@ -104,7 +105,7 @@ case class Property[T](key: String, defaultValue: T) extends PropertiesTrait[T] 
 
     this match {
       case Property(key: String, defaultValue: String) =>
-        component = new JTextField(this.value.toString)
+        component = new JTextField(this.value.toString, this.value.toString.length)
         component.asInstanceOf[JTextField].addActionListener(new ActionListener {
           override def actionPerformed(event: ActionEvent): Unit = {
             value = stringToObject(component.asInstanceOf[JTextField].getText)
@@ -169,7 +170,7 @@ case class Property[T](key: String, defaultValue: T) extends PropertiesTrait[T] 
             value = event.getSource.asInstanceOf[JComboBox[Locale]].getSelectedItem.asInstanceOf[T]
           }
         })
-      case _ => ???
+      case _ => throw new UnsupportedOperationException
     }
     component.setEnabled(this.editable)
     component
